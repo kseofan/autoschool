@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'css/style.css'%}">
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+        <title>Автошкола Томская</title>
+    </head>
+    <body>
+        <div class="main">
+            <div class="header">
+                <div class="title">
+                    Автошкола "Томская"
+                    <div class="subtitle">
+                        Электронная система учёта занятий
+                    </div>
+                </div>
+                <div class="logo">
+                    <a href=""><img src="{% static 'img/logo.jpg' %}" height="200px"></a>
+                </div>
+                <div class="user_info">
+                    {% if user.is_authenticated %}
+                        Привет, {{ person }}!<br>
+                        <a href="{% url 'logout' %}">Выйти</a>
+                    {% else %}
+                        Пожалуйста, войдите в систему:<br>
+                        <a href="{% url 'index' %}">Страница авторизации</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="navbar navbar-inverse">
+                <ul class="nav navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if person.type == 0 %}
+                            <li><a href="{% url 'profile' %}">МОЙ ПРОФИЛЬ</a></li>
+                            <li><a href="">МОЙ ИНСТРУКТОР</a></li>
+                            <li><a href="">МОИ ЗАНЯТИЯ</a></li>
+                            <li><a href="">ЗАПИСЬ НА ЗАНЯТИЯ</a></li>
+                        {% elif person.type == 1 %}
+                            <li><a href="">ПРОШЕДШИЕ ЗАНЯТИЯ</a></li>
+                            <li><a href="">БУДУЩИЕ ЗАНЯТИЯ</a></li>
+                        {% elif person.type == 2 %}
+                            <li><a href="">СПИСОК ИНСТРУКТОРОВ</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="content">
+                {% block main %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>

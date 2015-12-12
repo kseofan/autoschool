@@ -4,7 +4,7 @@ from instructors.models import Instructor
 from django.utils import timezone
 
 
-class Student(Person):
+class SkillLevel():
     UNFAMILIAR = 0
     FAMILIAR = 1
     EXPERIENCED = 2
@@ -13,8 +13,12 @@ class Student(Person):
         (FAMILIAR, 'Familiar'),
         (EXPERIENCED, 'Experienced'),
     )
+
+
+class Student(models.Model):
+    person = models.ForeignKey(Person, null=True)
     applications_limit = models.IntegerField(default=10)
-    skill_level = models.IntegerField(default=0, choices=SKILL_LEVEL_CHOICES)
+    skill_level = models.IntegerField(default=0, choices=SkillLevel.SKILL_LEVEL_CHOICES)
 
     def clear_future_applications(self):
         applications = Application.objects.filter(student=self).filter(apply_datetime__gt=timezone.now())
@@ -24,6 +28,9 @@ class Student(Person):
 
     def get_applications_amount(self):
         return Application.objects.filter(student=self).filter(is_actual=True).count()
+
+    def __str__(self):
+        return self.person.__str__() + ' (Студент)'
 
 
 class StudentInstructor(models.Model):
