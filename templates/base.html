@@ -35,14 +35,13 @@
                     {% if user.is_authenticated %}
                         {% if person.type == 0 %}
                             <li><a href="{% url 'profile' %}">МОЙ ПРОФИЛЬ</a></li>
-                            <li><a href="">МОЙ ИНСТРУКТОР</a></li>
-                            <li><a href="">МОИ ЗАНЯТИЯ</a></li>
-                            <li><a href="">ЗАПИСЬ НА ЗАНЯТИЯ</a></li>
+                            <li><a href="{% url 'instructors' %}">ИНСТРУКТОРЫ</a></li>
+                            <li><a href="{% url 'lessons' %}">ЗАНЯТИЯ</a></li>
                         {% elif person.type == 1 %}
-                            <li><a href="">ПРОШЕДШИЕ ЗАНЯТИЯ</a></li>
-                            <li><a href="">БУДУЩИЕ ЗАНЯТИЯ</a></li>
+                            <li><a href="{% url 'past_lessons' %}">ПРОШЕДШИЕ ЗАНЯТИЯ</a></li>
+                            <li><a href="{% url 'future_lessons' %}">БУДУЩИЕ ЗАНЯТИЯ</a></li>
                         {% elif person.type == 2 %}
-                            <li><a href="">СПИСОК ИНСТРУКТОРОВ</a></li>
+                            <li><a href="{% url 'curator_list' %}">СПИСОК ИНСТРУКТОРОВ</a></li>
                         {% endif %}
                     {% endif %}
                 </ul>

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth import logout, login, update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from users.models import Person
@@ -24,3 +24,12 @@ def action_login(request):
 def action_logout(request):
     logout(request)
     return redirect('index')
+
+
+def change_password(request):
+    if request.method == "POST":
+        user = request.user
+        user.set_password(request.POST['new_password1'])
+        user.save()
+        update_session_auth_hash(request, user)  # don't logout the user.
+    return redirect('profile')

@@ -9,37 +9,62 @@
             <li><b>Дата рождения: </b>{{ person.dateOfBirth|date:"d.m.Y" }}</li>
             <li><b>Контакты: </b>{{ person.phone }}</li>
             <li><b>Уровень навыка вождения: </b>
-                {% if student.skill_level == 0 %} Не знаком с управлением автомобилем
-                {% elif student.skill_level == 1 %} Немного знаком с управлением автомобилем
-                {% else %} Умеет управлять автомобилем
+                {% if student.skill_level == 0 %}Не знаком с управлением автомобилем
+                {% elif student.skill_level == 1 %}Немного знаком с управлением автомобилем
+                {% else %}Умеет управлять автомобилем
                 {% endif %}
             </li>
             <li><b>Лимит занятий: </b>{{ student.applications_limit }}</li>
         </ul>
     </div>
 
+    <legend>Изменение профиля</legend>
     <div class="text-center" style="padding-bottom: 50px">
         <form action='{% url 'change_profile' %}' method='post'>{% csrf_token %}
-            <div class="input-group" style="margin: 5px">
+            <div class="input-group" style="margin: 5px; width: 300px">
                 <label for="last_name">Фамилия</label>
                 <input type="text" name="last_name" id="last_name" class="form-control" value="{{ user.last_name }}" disabled>
             </div>
-            <div class="input-group" style="margin: 5px">
+            <div class="input-group" style="margin: 5px; width: 300px">
                 <label for="first_name">Имя</label>
                 <input type="text" name="first_name" id="first_name" class="form-control" value="{{ user.first_name }}" disabled>
             </div>
-            <div class="input-group" style="margin: 5px">
+            <div class="input-group" style="margin: 5px; width: 300px">
                 <label for="middle_name">Отчество</label>
-                <input type="text" name="middle_name" id="middle_name" class="form-control" value="{{ person.middle_name }}">
+                <input type="text" name="middle_name" id="middle_name" class="form-control" value="{{ person.middle_name }}" maxlength="40">
             </div>
-            <div class="input-group" style="margin: 5px">
+            <div class="input-group" style="margin: 5px; width: 300px">
                 <label for="dateOfBirth">Дата рождения</label>
                 <input type="datetime" name="dateOfBirth" id="dateOfBirth" class="form-control" value="{{ person.dateOfBirth|date:"d.m.Y" }}" disabled>
             </div>
-            <div class="input-group" style="margin: 5px">
-                <input type="password" name="password" id="password" class="form-control" placeholder="Пароль">
+            <div class="input-group" style="margin: 5px; width: 300px">
+                <label for="phone">Контакты</label>
+                <input type="text" name="phone" id="phone" class="form-control" value="{{ person.phone }}" maxlength="100">
+            </div>
+            <div class="input-group" style="margin: 5px; width: 400px">
+                <label for="skill_level">Навык вождения</label>
+                <select name="skill_level" id="skill_level" class="form-control">
+                    <option value="0" {% if student.skill_level == 0 %} selected {% endif %}>Не знаком с управлением автомобилем</option>
+                    <option value="1" {% if student.skill_level == 1 %} selected {% endif %}>Немного знаком с управлением автомобилем</option>
+                    <option value="2" {% if student.skill_level == 2 %} selected {% endif %}>Умеет управлять автомобилем</option>
+                </select>
             </div>
             <input type="submit" value="Изменить данные" class="btn btn-lg btn-success" />
+        </form>
+    </div>
+
+    <legend>Изменение пароля</legend>
+    <div class="text-center" style="padding-bottom: 50px">
+        <form action='{% url 'change_password' %}' method='post'>{% csrf_token %}
+            <div class="input-group" style="margin: 5px; width: 200px">
+                <label for="new_password1">Новый пароль</label>
+                <input type="password" name="new_password1" id="new_password1" class="form-control">
+            </div>
+            <div class="input-group" style="margin: 5px; width: 200px">
+                <label for="new_password2">Повторите пароль</label>
+                <input type="password" name="new_password2" id="new_password2" class="form-control">
+            </div>
+            <input type="submit" value="Изменить пароль" class="btn btn-lg btn-success" />
         </form>
     </div>
 
