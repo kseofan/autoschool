@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <legend>Список будущих занятий</legend>
+
+    <div style="padding-bottom: 50px">
+        <b>Ученики не могут отменить занятие, до которого осталось менее суток.</b>
+    </div>
+
+    <div style="padding-bottom: 50px">
+        {% for lesson in object_list %}
+            <div style="padding-bottom: 20px">
+                <b>№ {{ forloop.counter }}: </b>
+                <ul>
+                    <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
+                    <li>
+                        {% if lesson.student %}
+                            <b>Ученик: </b>{{ lesson.student }}
+                            <b>Контакты: </b>{{ lesson.student.person.contacts }}
+                        {% else %}
+                            <b>Занятие свободно.</b>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

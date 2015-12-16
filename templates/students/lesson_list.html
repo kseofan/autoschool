@@ -4,7 +4,24 @@
     <legend>Список занятий</legend>
 
     <div style="padding-bottom: 50px">
-
+        {% for lesson in object_list %}
+            <div style="padding-bottom: 20px">
+                {% if lesson.is_lesson_passed %}
+                    <b>№ {{ forloop.counter }}: </b>
+                    <ul>
+                        <li><b>Инструктор: </b>{{ lesson.instructor.person }}</li>
+                        <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
+                        <li><b>Часы вождения: </b>{{ lesson.hours }}</li>
+                    </ul>
+                {% else %}
+                    <ul>
+                        <li><b>Инструктор: </b>{{ lesson.instructor.person }}</li>
+                        <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
+                        <li><b>Запись на занятие: </b></li>
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
 
 

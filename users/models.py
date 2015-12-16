@@ -14,7 +14,7 @@ class PersonType():
 
 
 class Person(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, unique=True)
     middle_name = models.TextField(blank=True, null=True)
     dateOfBirth = models.DateTimeField(blank=True, null=True)
     phone = models.TextField(blank=True, null=True)

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <legend>Список прошедших занятий</legend>
+
+    <div style="padding-bottom: 50px">
+        <b>Вы можете проставить часы вождения, которые провёл ученик на каждом прошедшем занятии.</b>
+    </div>
+
+    <div style="padding-bottom: 50px">
+        {% for lesson in object_list %}
+            <div style="padding-bottom: 20px">
+                <b>№ {{ forloop.counter }}: </b>
+                <ul>
+                    <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
+                    <li><b>Часы вождения: </b>{{ lesson.hours }}</li>
+                    <li><b>Ученик: </b>{{ lesson.student }}</li>
+                </ul>
+                <form action="{% url 'set_hours' %}" method="post">{% csrf_token %}
+                    <input type="hidden" name="lesson_id" id="lesson_id" value="{{ lesson.pk }}"/>
+                    <div class="input-group" style="margin: 5px; width: 300px">
+                        <label for="hours">Часы вождения</label>
+                        <input type="text" name="hours" id="hours" class="form-control" value="{{ lesson.hours }}">
+                    </div>
+                    <input type="submit" value="Указать часы вождения" class="btn btn-xs btn-success" />
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

@@ -41,7 +41,7 @@
                             <li><a href="{% url 'past_lessons' %}">ПРОШЕДШИЕ ЗАНЯТИЯ</a></li>
                             <li><a href="{% url 'future_lessons' %}">БУДУЩИЕ ЗАНЯТИЯ</a></li>
                         {% elif person.type == 2 %}
-                            <li><a href="{% url 'curator_list' %}">СПИСОК ИНСТРУКТОРОВ</a></li>
+                            <li><a href="{% url 'curator_list' %}">СПИСОК ИНСТРУКТОРОВ И ИХ ЗАНЯТИЙ</a></li>
                         {% endif %}
                     {% endif %}
                 </ul>

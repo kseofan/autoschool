@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 from users.models import Person, PersonType
-from students.models import Student, SkillLevel, Lesson, Application
+from students.models import Student, SkillLevel, Lesson
 from instructors.models import Instructor
 
 

@@ -3,7 +3,7 @@ from users.models import Person
 
 
 class Instructor(models.Model):
-    person = models.ForeignKey(Person, null=True)
+    person = models.ForeignKey(Person, null=True, unique=True)
     automobile = models.TextField(blank=True)
 
     def __str__(self):

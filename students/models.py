@@ -16,18 +16,26 @@ class SkillLevel():
 
 
 class Student(models.Model):
-    person = models.ForeignKey(Person, null=True)
+    person = models.ForeignKey(Person, null=True, unique=True)
     applications_limit = models.IntegerField(default=10)
     skill_level = models.IntegerField(default=0, choices=SkillLevel.SKILL_LEVEL_CHOICES)
 
     def clear_future_applications(self):
-        applications = Application.objects.filter(student=self).filter(apply_datetime__gt=timezone.now())
-        for application in applications:
-            application.is_actual = False
-            application.save()
+        lessons = Lesson.objects.filter(student=self).filter(datetime__gt=timezone.now())
+        for lesson in lessons:
+            if not lesson.is_cancelable:
+                return False
+        for lesson in lessons:
+            lesson.student = None
+            lesson.save()
+        return True
 
     def get_applications_amount(self):
-        return Application.objects.filter(student=self).filter(is_actual=True).count()
+        return Lesson.objects.filter(student=self).filter(is_cancelable=False).count()
+
+    def get_instructor(self):
+        student_instructor = StudentInstructor.objects.filter(student=self).latest('apply_datetime')
+        return student_instructor.instructor
 
     def __str__(self):
         return self.person.__str__() + ' (Студент)'
@@ -43,19 +51,18 @@ class Lesson(models.Model):
     datetime = models.DateTimeField(null=False, default=timezone.now())
     hours = models.IntegerField(default=0)
     instructor = models.ForeignKey(Instructor)
+    student = models.ForeignKey(Student, null=True, blank=True)
+    is_cancelable = models.BooleanField(default=True)
 
     def __str__(self):
         return 'Занятие инструктора ' + self.instructor.__str__() + ' ' + self.datetime.__str__()
 
-    def get_actual_application(self):
-        return Application.objects.filter(lesson=self).latest(field_name='apply_datetime')
-
     def is_lesson_tomorrow(self):
-        return timezone.now() >= self.datetime + timezone.timedelta(hours=-24)
+        if timezone.now() >= self.datetime + timezone.timedelta(hours=-24):
+            self.is_cancelable = False
+        else:
+            self.is_cancelable = True
+        return not self.is_cancelable
 
-
-class Application(models.Model):
-    apply_datetime = models.DateTimeField(null=False, default=timezone.now())
-    student = models.ForeignKey(Student)
-    lesson = models.ForeignKey(Lesson)
-    is_actual = models.BooleanField(default=True)
+    def is_lesson_passed(self):
+        return timezone.now() >= self.datetime
