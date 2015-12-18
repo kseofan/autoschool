@@ -74,7 +74,30 @@ def change_instructor(request):
     if request.method == "POST":
         instructor = Instructor.objects.get(pk=request.POST['instructor_id'])
         student = Student.objects.get(pk=request.POST['student_id'])
-        studentInstructor = StudentInstructor.objects.create(apply_datetime=timezone.now(), student=student, instructor=instructor)
-        studentInstructor.save()
+        student.clear_future_applications()
+        student_instructor = StudentInstructor.objects.create(apply_datetime=timezone.now(), student=student, instructor=instructor)
+        student_instructor.save()
 
     return redirect('instructors')
+
+
+def apply_lesson(request):
+    if request.method == "POST":
+        lesson = Lesson.objects.get(pk=request.POST['lesson_id'])
+        student = Student.objects.get(pk=request.POST['student_id'])
+        if lesson.student is None:
+            lesson.student = student
+            lesson.save()
+
+    return redirect('lessons')
+
+
+def cancel_lesson(request):
+    if request.method == "POST":
+        lesson = Lesson.objects.get(pk=request.POST['lesson_id'])
+        student = Student.objects.get(pk=request.POST['student_id'])
+        if lesson.student == student:
+            lesson.student = None
+            lesson.save()
+
+    return redirect('lessons')

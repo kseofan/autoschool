@@ -23,7 +23,7 @@ class Student(models.Model):
     def clear_future_applications(self):
         lessons = Lesson.objects.filter(student=self).filter(datetime__gt=timezone.now())
         for lesson in lessons:
-            if not lesson.is_cancelable:
+            if lesson.is_lesson_tomorrow() or lesson.is_lesson_passed():
                 return False
         for lesson in lessons:
             lesson.student = None
@@ -34,8 +34,17 @@ class Student(models.Model):
         return Lesson.objects.filter(student=self).filter(is_cancelable=False).count()
 
     def get_instructor(self):
-        student_instructor = StudentInstructor.objects.filter(student=self).latest('apply_datetime')
-        return student_instructor.instructor
+        try:
+            student_instructor = StudentInstructor.objects.filter(student=self).latest('apply_datetime')
+            return student_instructor.instructor
+        except StudentInstructor.DoesNotExist:
+            return None
+
+    def get_latest_lesson(self):
+        try:
+            return Lesson.objects.filter(student=self).latest('datetime')
+        except Lesson.DoesNotExist:
+            return None
 
     def __str__(self):
         return self.person.__str__() + ' (Студент)'
@@ -50,19 +59,14 @@ class StudentInstructor(models.Model):
 class Lesson(models.Model):
     datetime = models.DateTimeField(null=False, default=timezone.now())
     hours = models.IntegerField(default=0)
-    instructor = models.ForeignKey(Instructor)
+    instructor = models.ForeignKey(Instructor, null=True)
     student = models.ForeignKey(Student, null=True, blank=True)
-    is_cancelable = models.BooleanField(default=True)
 
     def __str__(self):
         return 'Занятие инструктора ' + self.instructor.__str__() + ' ' + self.datetime.__str__()
 
     def is_lesson_tomorrow(self):
-        if timezone.now() >= self.datetime + timezone.timedelta(hours=-24):
-            self.is_cancelable = False
-        else:
-            self.is_cancelable = True
-        return not self.is_cancelable
+        return self.datetime > timezone.now() >= self.datetime + timezone.timedelta(hours=-24)
 
     def is_lesson_passed(self):
         return timezone.now() >= self.datetime
