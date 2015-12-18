@@ -17,13 +17,17 @@
                 {% if student.get_instructor == instructor %}
                     <b>Вы закреплены за данным инструктором.</b>
                 {% else %}
-                    <div  style="margin-left: 20px">
-                        <form action='{% url 'change_instructor' %}' method='post'>{% csrf_token %}
-                            <input type="hidden" name="instructor_id" id="instructor_id" value="{{ instructor.pk }}">
-                            <input type="hidden" name="student_id" id="student_id" value="{{ student.pk }}">
-                            <input type="submit" value="Выбрать инструктора" class="btn btn-xs btn-success" />
-                        </form>
-                    </div>
+                    {% if student.get_latest_lesson.is_lesson_tomorrow %}
+                        <b>Вы не можете сменить инструктора, так как до ближайшего занятия осталось менее суток.</b>
+                    {% else %}
+                        <div  style="margin-left: 20px">
+                            <form action='{% url 'change_instructor' %}' method='post'>{% csrf_token %}
+                                <input type="hidden" name="instructor_id" id="instructor_id" value="{{ instructor.pk }}">
+                                <input type="hidden" name="student_id" id="student_id" value="{{ student.pk }}">
+                                <input type="submit" value="Выбрать инструктора" class="btn btn-xs btn-success" />
+                            </form>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </div>
         {% endfor %}

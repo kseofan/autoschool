@@ -13,14 +13,12 @@
                 <b>№ {{ forloop.counter }}: </b>
                 <ul>
                     <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
-                    <li>
-                        {% if lesson.student %}
-                            <b>Ученик: </b>{{ lesson.student }}
-                            <b>Контакты: </b>{{ lesson.student.person.contacts }}
-                        {% else %}
-                            <b>Занятие свободно.</b>
-                        {% endif %}
-                    </li>
+                    {% if lesson.student %}
+                        <li><b>Ученик: </b>{{ lesson.student }}</li>
+                        <li><b>Контакты: </b>{{ lesson.student.person.contacts }}</li>
+                    {% else %}
+                        <li><b>Занятие свободно.</b></li>
+                    {% endif %}
                 </ul>
             </div>
         {% endfor %}

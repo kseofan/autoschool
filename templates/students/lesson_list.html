@@ -19,6 +19,31 @@
                         <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
                         <li><b>Запись на занятие: </b></li>
                     </ul>
+                    {% if lesson.student == student %}
+                        {% if lesson.is_lesson_tomorrow %}
+                            <b>Вы не можете отменить данное занятие, так как до него осталось менее суток.</b>
+                        {% else %}
+                            <div  style="margin-left: 20px">
+                                <form action='{% url 'cancel_lesson' %}' method='post'>{% csrf_token %}
+                                    <input type="hidden" name="lesson_id" id="lesson_id" value="{{ lesson.pk }}">
+                                    <input type="hidden" name="student_id" id="student_id" value="{{ student.pk }}">
+                                    <input type="submit" value="Отменить запись на занятие" class="btn btn-xs btn-warning" />
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        {% if student.get_applications_amount >= student.applications_limit %}
+                            <b>Вы не можете записаться на занятие, так как лимит ваших занятий исчерпан.</b>
+                        {% else %}
+                            <div  style="margin-left: 20px">
+                                <form action='{% url 'apply_lesson' %}' method='post'>{% csrf_token %}
+                                    <input type="hidden" name="lesson_id" id="lesson_id" value="{{ lesson.pk }}">
+                                    <input type="hidden" name="student_id" id="student_id" value="{{ student.pk }}">
+                                    <input type="submit" value="Записаться на занятие" class="btn btn-xs btn-success" />
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
             </div>
         {% endfor %}
