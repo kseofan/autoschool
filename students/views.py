@@ -14,7 +14,8 @@ class LessonsListView(ListView):
         person = Person.objects.get(user=self.request.user)
         student = Student.objects.get(person=person)
         student_queryset = Lesson.objects.filter(student=student)
-        instructor_queryset = Lesson.objects.filter(instructor=student.get_instructor()).filter(datetime__gt=timezone.now())
+        instructor_queryset = Lesson.objects.filter(instructor=student.get_instructor()).filter(
+            datetime__gt=timezone.now())
         result_queryset = student_queryset | instructor_queryset
         result_queryset = result_queryset.order_by('datetime')
         return result_queryset
@@ -34,6 +35,11 @@ class InstructorsListView(ListView):
     model = Instructor
 
     def get_context_data(self, **kwargs):
+        instructors = self.get_queryset()
+        lessons = {}
+        for instructor in instructors:
+            lessons[instructor.pk] = Lesson.objects.filter(instructor=instructor).filter(
+                datetime__gt=timezone.now()).order_by('datetime')
         context = super(InstructorsListView, self).get_context_data(**kwargs)
         if not (isinstance(self.request.user, User) and self.request.user.is_authenticated()):
             return redirect('index')
@@ -41,6 +47,7 @@ class InstructorsListView(ListView):
         student = Student.objects.get(person=person)
         context['person'] = person
         context['student'] = student
+        context['lessons'] = lessons
         return context
 
 
@@ -75,7 +82,8 @@ def change_instructor(request):
         instructor = Instructor.objects.get(pk=request.POST['instructor_id'])
         student = Student.objects.get(pk=request.POST['student_id'])
         student.clear_future_applications()
-        student_instructor = StudentInstructor.objects.create(apply_datetime=timezone.now(), student=student, instructor=instructor)
+        student_instructor = StudentInstructor.objects.create(apply_datetime=timezone.now(), student=student,
+                                                              instructor=instructor)
         student_instructor.save()
 
     return redirect('instructors')

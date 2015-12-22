@@ -29,6 +29,24 @@
                         </div>
                     {% endif %}
                 {% endif %}
+                {% load additional_tags %}
+                {% if lessons|hash:instructor.pk %}
+                    <div  style="margin-left: 20px">
+                        <b style="font-size: larger">Занятия: </b>
+                        {% for lesson in lessons|hash:instructor.pk %}
+                            <div  style="padding-bottom: 20px">
+                                <ul>
+                                    <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
+                                    {% if lesson.student %}
+                                        <li><b>Занятие уже занято.</b></li>
+                                    {% else %}
+                                        <li><b>Занятие свободно.</b></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
         <ul>

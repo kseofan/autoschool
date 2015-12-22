@@ -2,9 +2,6 @@
 
 {% block main %}
     <legend>Список инструкторов и их занятий</legend>
-    <div style="padding-bottom: 50px">
-        <b>Вы можете сменить инструктора, если не записаны на занятие предыдущего, до которого осталось менее суток.</b>
-    </div>
 
     <div style="padding-bottom: 50px">
         {% for instructor in object_list %}
@@ -14,24 +11,26 @@
                     <li><b>Контакты: </b>{{ instructor.person.phone }}</li>
                     <li><b>Автомобиль: </b>{{ instructor.automobile }}</li>
                 </ul>
-                <div  style="margin-left: 20px">
-                    <b style="font-size: larger">Занятия: </b>
-                    {% load additional_tags %}
-                    {% for lesson in lessons|hash:instructor.pk %}
-                        <div  style="padding-bottom: 20px">
-                            <ul>
-                                <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
-                                <li><b>Часы вождения: </b>{{ lesson.hours }}</li>
-                                {% if lesson.student %}
-                                    <li><b>Ученик: </b>{{ lesson.student }}</li>
-                                    <li><b>Контакты: </b>{{ lesson.student.person.phone }}</li>
-                                {% else %}
-                                    <li><b>Занятие свободно.</b></li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    {% endfor %}
-                </div>
+                {% load additional_tags %}
+                {% if lessons|hash:instructor.pk %}
+                    <div  style="margin-left: 20px">
+                        <b style="font-size: larger">Занятия: </b>
+                        {% for lesson in lessons|hash:instructor.pk %}
+                            <div  style="padding-bottom: 20px">
+                                <ul>
+                                    <li><b>Дата и время: </b>{{ lesson.datetime|date:"d.m.Y - H:i"  }}</li>
+                                    <li><b>Часы вождения: </b>{{ lesson.hours }}</li>
+                                    {% if lesson.student %}
+                                        <li><b>Ученик: </b>{{ lesson.student }}</li>
+                                        <li><b>Контакты: </b>{{ lesson.student.person.phone }}</li>
+                                    {% else %}
+                                        <li><b>Занятие свободно.</b></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
         <ul>

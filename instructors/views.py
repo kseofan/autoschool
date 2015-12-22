@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.views.generic import ListView
-from users.models import Person, PersonType
-from students.models import Student, SkillLevel, Lesson
+from users.models import Person
+from students.models import Lesson
 
 
 class PastLessonsListView(ListView):
@@ -40,8 +40,15 @@ class FutureLessonsListView(ListView):
 
 def set_hours(request):
     if request.method == "POST":
+        hours = request.POST['hours']
         lesson = Lesson.objects.get(pk=request.POST['lesson_id'])
-        lesson.hours = request.POST['hours']
+        try:
+            float_hours = float(hours)
+            if float_hours < 0:
+                float_hours = 0
+            lesson.hours = float_hours
+        except ValueError:
+            lesson.hours = 0
         lesson.save()
 
     return redirect('past_lessons')
