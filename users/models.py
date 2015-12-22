@@ -28,7 +28,3 @@ class Person(models.Model):
 
     def birthday(self):
         return self.dateOfBirth.__format__('HH')
-
-
-
-

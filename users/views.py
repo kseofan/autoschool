@@ -28,8 +28,9 @@ def action_logout(request):
 
 def change_password(request):
     if request.method == "POST":
-        user = request.user
-        user.set_password(request.POST['new_password1'])
-        user.save()
-        update_session_auth_hash(request, user)  # don't logout the user.
+        if request.POST['new_password1'] == request.POST['new_password2'] and request.POST['new_password1'] != '':
+            user = request.user
+            user.set_password(request.POST['new_password1'])
+            user.save()
+            update_session_auth_hash(request, user)  # don't logout the user.
     return redirect('profile')

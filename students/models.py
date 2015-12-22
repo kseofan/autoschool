@@ -30,14 +30,23 @@ class Student(models.Model):
             lesson.save()
         return True
 
-    def get_applications_amount(self):
-        return Lesson.objects.filter(student=self).filter(is_cancelable=False).count()
+    def get_lessons_amount(self):
+        try:
+            return Lesson.objects.filter(student=self).filter(is_cancelable=False).count()
+        except Lesson.DoesNotExist:
+            return None
 
     def get_instructor(self):
         try:
             student_instructor = StudentInstructor.objects.filter(student=self).latest('apply_datetime')
             return student_instructor.instructor
         except StudentInstructor.DoesNotExist:
+            return None
+
+    def get_lessons(self):
+        try:
+            return Lesson.objects.filter(student=self)
+        except Lesson.DoesNotExist:
             return None
 
     def get_latest_lesson(self):

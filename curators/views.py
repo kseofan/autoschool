@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.views.generic import ListView
-from users.models import Person, PersonType
-from students.models import Student, SkillLevel, Lesson
+from users.models import Person
+from students.models import Lesson
 from instructors.models import Instructor
 
 
